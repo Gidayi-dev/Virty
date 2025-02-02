@@ -1,12 +1,10 @@
-
+import SignUp from "./components/home/signup"
 
 function App() {
 
 
   return (
-    <div className="text-8xl">
-      Hello
-    </div>
+    <SignUp/>
   )
 }
 
