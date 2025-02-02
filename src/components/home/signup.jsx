@@ -4,14 +4,15 @@ import { FaApple, FaGoogle } from 'react-icons/fa';
 const SignUpForm = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(to right, rgb(204, 203, 199), rgb(241, 230, 158))' }}>
-      <div className="flex bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
+      <div className="flex bg-white rounded-4xl shadow-lg overflow-hidden w-full max-w-4xl">
         {/* Image Section */}
         <div className="w-1/2 bg-cover bg-center" style={{ backgroundImage: 'url(./assets/SideImage)' }}></div>
         
         {/* Form Section */}
         <div className="w-1/2 p-8">
-          <h1 className="text-2xl font-bold mb-6">Create an account</h1>
-          <p className="mb-6">Sign up and get 30-day free trial</p>
+          <h1 className="text-2xl font-bold mb-2 text-center text-gray-400">Create an account</h1>
+          <p className='text-center mb-6'><a href="/login" >Already have an account? Sign In</a></p>
+          {/* <p className="mb-6 text-3xl font-bold text-center text-gray-400">VIRTY</p> */}
           
           <form>
             <div className="mb-4">
@@ -19,7 +20,7 @@ const SignUpForm = () => {
               <input
                 type="text"
                 id="fullname"
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 rounded-2xl cursor-pointer"
                 placeholder="Amélie Laurent"
               />
             </div>
@@ -29,23 +30,23 @@ const SignUpForm = () => {
               <input
                 type="email"
                 id="email"
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 rounded-2xl cursor-pointer"
                 placeholder="amélielaurent7622@gmail.com"
               />
             </div>
             
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2" htmlFor="password">Password</label>
+              <label className="block text-sm font-medium mb-2 " htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
-                className="w-full px-3 py-2 border rounded-lg"
+                className="w-full px-3 py-2 rounded-2xl cursor-pointer"
               />
             </div>
             
             <button
               type="submit"
-              className="w-full bg-orange-300 text-white py-2 rounded-lg hover:bg-orange-500"
+              className="w-full bg-orange-300 text-white py-2 rounded-2xl hover:bg-orange-500 cursor-pointer" 
             >
               Submit
             </button>
@@ -54,11 +55,11 @@ const SignUpForm = () => {
           <div className="mt-6 text-center">
             <p className="text-sm">Or sign up with</p>
             <div className="flex justify-center space-x-4 mt-4">
-              <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center">
+              <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center cursor-pointer">
                 <FaApple className="mr-2" />
                 <span>Apple</span>
               </button>
-              <button className="bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center">
+              <button className="bg-gray-600 text-white px-4 py-2 rounded-2xl flex items-center cursor-pointer">
                 <FaGoogle className="mr-2" />
                 <span>Google</span>
               </button>
