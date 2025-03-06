@@ -45,7 +45,7 @@ const Dashboard = () => {
 
   const joinRoom = (roomType) => {
     toast.success(`Joining ${roomType} room...`, { autoClose: 2000 });
-    setTimeout(() => navigate('/study-room'), 2000); // Placeholder route
+    setTimeout(() => navigate('/studyroom'), 2000); // Placeholder route
   };
 
   const toggleTheme = () => {
