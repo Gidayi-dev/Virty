@@ -1,11 +1,9 @@
-import SignUp from "./components/home/signup"
+import SignUp from "./components/home/signup";
 
 function App() {
-
-
   return (
-    <SignUp/>
-  )
+    <SignUp />
+  );
 }
 
-export default App
+export default App;
