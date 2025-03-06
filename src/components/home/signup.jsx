@@ -78,7 +78,7 @@ const SignUp = () => {
               type="submit"
               className="w-full bg-orange-300 text-white py-2 rounded-xl hover:bg-orange-500 cursor-pointer"
             >
-              Submit
+              Create Account
             </button>
           </form>
 

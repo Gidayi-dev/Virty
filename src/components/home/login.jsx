@@ -1,78 +1,8 @@
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigate = useNavigate();
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     // Simulate login validation
-//     if (email === "user@example.com" && password === "password123") {
-//       toast.success("Signed in successfully!", { autoClose: 2000 });
-//       setTimeout(() => navigate("/home"), 2000); // Redirect after toast
-//     } else {
-//       toast.error("Invalid email or password");
-//     }
-//   };
-
-//   return (
-//     <div
-//       className="min-h-screen flex items-center justify-center p-4"
-//       style={{ background: "linear-gradient(to right, #56021F, #7D1C4A)" }}
-//     >
-//       <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full">
-//         <h1 className="text-2xl font-bold mb-4 text-center text-gray-700">
-//           Login to Your Account
-//         </h1>
-//         <form onSubmit={handleLogin}>
-//           <div className="mb-4">
-//             <label className="block text-sm font-medium mb-2">Email</label>
-//             <input
-//               type="email"
-//               className="w-full px-3 py-2 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#D17D98] outline-none"
-//               placeholder="Enter your email"
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               required
-//             />
-//           </div>
-//           <div className="mb-6">
-//             <label className="block text-sm font-medium mb-2">Password</label>
-//             <input
-//               type="password"
-//               className="w-full px-3 py-2 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#D17D98] outline-none"
-//               placeholder="Enter your password"
-//               value={password}
-//               onChange={(e) => setPassword(e.target.value)}
-//               required
-//             />
-//           </div>
-//           <button
-//             type="submit"
-//             className="w-full bg-[#7D1C4A] text-white py-2 rounded-2xl hover:bg-[#56021F] cursor-pointer"
-//           >
-//             Login
-//           </button>
-//         </form>
-//         <p className="text-center mt-4 text-sm">
-//           Don't have an account? <a href="/signup" className="text-[#7D1C4A]">Sign Up</a>
-//         </p>
-//       </div>
-//       <ToastContainer position="top-right" />
-//     </div>
-//   );
-// };
-
-// export default Login;
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaApple, FaGoogle } from 'react-icons/fa';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -81,54 +11,78 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Simulate login success
     toast.success('Logged in successfully!', { autoClose: 2000 });
-    setTimeout(() => navigate('/dashboard'), 2000);
+    setTimeout(() => navigate('/dashboard'), 2000); // Placeholder route
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: 'linear-gradient(to right, #f0f0f0, #ffffff)' }}
-    >
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-        <form onSubmit={handleLogin}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full px-3 py-2 border rounded-lg"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(to right, rgb(204, 203, 199), rgb(241, 230, 158))' }}>
+      <div className="flex bg-white rounded-2xl shadow-lg overflow-hidden w-full max-w-4xl">
+        <div
+          className="w-1/2 bg-cover bg-center rounded-2xl"
+          style={{
+            backgroundImage: 'url(https://images.pexels.com/photos/904616/pexels-photo-904616.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
+          }}
+        ></div>
+
+        <div className="w-1/2 p-8">
+          <h1 className="text-2xl font-bold mb-2 text-center text-gray-400">Welcome Back</h1>
+          <p className="text-center mb-6">
+            <a href="/signup">Don’t have an account? Sign Up</a>
+          </p>
+
+          <form onSubmit={handleLogin}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2" htmlFor="email">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="w-full px-3 py-2 rounded-xl cursor-pointer border"
+                placeholder="amélielaurent7622@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium mb-2" htmlFor="password">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="w-full px-3 py-2 rounded-xl cursor-pointer border"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-orange-300 text-white py-2 rounded-xl hover:bg-orange-500 cursor-pointer"
+            >
+              Login
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm">Or sign in with</p>
+            <div className="flex justify-center space-x-4 mt-4">
+              <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center cursor-pointer">
+                <FaApple className="mr-2" />
+                <span>Apple</span>
+              </button>
+              <button className="bg-gray-600 text-white px-4 py-2 rounded-xl flex items-center cursor-pointer">
+                <FaGoogle className="mr-2" />
+                <span>Google</span>
+              </button>
+            </div>
           </div>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full px-3 py-2 border rounded-lg"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
-          >
-            Login
-          </button>
-        </form>
-        <ToastContainer position="top-right" />
+        </div>
       </div>
+      <ToastContainer position="top-right" />
     </div>
   );
 };
