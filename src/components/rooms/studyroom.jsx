@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Stage, Layer, Line } from 'react-konva';
 
 const StudyRoom = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [timer, setTimer] = useState(25 * 60); // 25 minutes in seconds
+  const [timer, setTimer] = useState(25 * 60);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [lines, setLines] = useState([]);
+  const [isDrawing, setIsDrawing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get room type from navigation state (passed from Dashboard)
   const roomType = location.state?.roomType || 'Silent';
 
-  // Pomodoro Timer Logic
   useEffect(() => {
     let interval;
     if (timerRunning && timer > 0) {
@@ -24,7 +25,7 @@ const StudyRoom = () => {
     } else if (timer === 0) {
       toast.success('Pomodoro complete! Take a break.', { autoClose: 2000 });
       setTimerRunning(false);
-      setTimer(25 * 60); // Reset to 25 minutes
+      setTimer(25 * 60);
     }
     return () => clearInterval(interval);
   }, [timerRunning, timer]);
@@ -58,9 +59,28 @@ const StudyRoom = () => {
     return `${mins}:${secs < 10 ? '0' + secs : secs}`;
   };
 
+  // Whiteboard Drawing Logic
+  const handleMouseDown = (e) => {
+    setIsDrawing(true);
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { points: [pos.x, pos.y] }]);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDrawing) return;
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+    setLines([...lines.slice(0, -1), lastLine]);
+  };
+
+  const handleMouseUp = () => {
+    setIsDrawing(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      {/* Top Navigation Bar */}
       <div className="bg-[#56021F] text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">{roomType} Room</h1>
         <div className="flex items-center space-x-4">
@@ -73,9 +93,7 @@ const StudyRoom = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="p-6 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Chat Section */}
         <div className="md:col-span-1 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Chat</h2>
           <div className="h-64 overflow-y-auto mb-4">
@@ -97,7 +115,6 @@ const StudyRoom = () => {
           </form>
         </div>
 
-        {/* Video/Participants Section (Placeholder) */}
         <div className="md:col-span-1 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Participants</h2>
           <div className="h-64 flex items-center justify-center text-gray-500">
@@ -105,10 +122,8 @@ const StudyRoom = () => {
           </div>
         </div>
 
-        {/* Tools Section */}
         <div className="md:col-span-1 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Tools</h2>
-          {/* Pomodoro Timer */}
           <div className="text-center mb-6">
             <p className="text-2xl font-bold text-gray-700 mb-4">{formatTime(timer)}</p>
             <button
@@ -118,9 +133,29 @@ const StudyRoom = () => {
               {timerRunning ? 'Pause' : 'Start'}
             </button>
           </div>
-          {/* Whiteboard Placeholder */}
-          <div className="h-32 flex items-center justify-center text-gray-500">
-            <p>Whiteboard coming soon...</p>
+          <div className="mb-6">
+            <h3 className="text-md font-semibold text-[#7D1C4A] mb-2">Whiteboard</h3>
+            <Stage
+              width={300}
+              height={200}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              className="border border-gray-300 rounded-lg"
+            >
+              <Layer>
+                {lines.map((line, i) => (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    stroke="#7D1C4A"
+                    strokeWidth={2}
+                    tension={0.5}
+                    lineCap="round"
+                  />
+                ))}
+              </Layer>
+            </Stage>
           </div>
         </div>
       </div>
