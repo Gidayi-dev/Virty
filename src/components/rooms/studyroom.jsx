@@ -13,6 +13,17 @@ const StudyRoom = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isWhiteboardOpen, setIsWhiteboardOpen] = useState(false);
+  const [participants, setParticipants] = useState([
+    { name: 'You', micOn: true, camOn: true },
+    { name: 'John', micOn: true, camOn: true },
+    { name: 'Gidayi', micOn: true, camOn: true },
+    { name: 'You', micOn: true, camOn: true },
+    { name: 'John', micOn: true, camOn: true },
+    { name: 'Gidayi', micOn: true, camOn: true },
+    { name: 'You', micOn: true, camOn: true },
+    { name: 'John', micOn: true, camOn: true },
+    { name: 'Gidayi', micOn: true, camOn: true },
+  ]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,6 +92,20 @@ const StudyRoom = () => {
     setIsDrawing(false);
   };
 
+  const toggleMic = (index) => {
+    setParticipants((prev) => 
+      prev.map((p, i) => (i === index ? { ...p, micOn: !p.micOn } : p))
+    );
+    toast.info(`${participants[index].name} ${participants[index].micOn ? 'unmuted' : 'muted'} mic`, { autoClose: 1000 });
+  };
+ 
+  const toggleCam = (index) => {
+    setParticipants((prev) =>
+      prev.map((p, i) => (i === index ? { ...p, camOn: !p.camOn } : p))
+    );
+    toast.info(`${participants[index].name} ${participants[index].camOn ? 'turned off' : 'turned on'} camera`, { autoClose: 1000 });
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Top Navigation Bar */}
@@ -133,8 +158,35 @@ const StudyRoom = () => {
         {/* Participants Section */}
         <div className="flex-grow bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Participants</h2>
-          <div className="h-full flex items-center justify-center text-gray-500">
-            <p>Video feed coming soon...</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 h-full overflow-y-auto">
+            {participants.map((participant, index) => (
+              <div
+                key={index}
+                className="bg-[gray] p-4 rounded-lg flex flex-col items-center justify-center relative"
+              >
+                {/* Avatar */}
+                <div className="w-16 h-16 bg-[#D17D98] rounded-full flex items-center justify-center text-white text-2xl mb-2">
+                  {participant.name[0]}
+                </div>
+                {/* Name */}
+                <span className="text-[#7D1C4A] font-semibold">{participant.name}</span>
+                {/* Controls */}
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={() => toggleMic(index)}
+                    className={`p-2 rounded-full ${participant.micOn ? 'text-[#7D1C4A] hover:bg-[#F4CCE9]' : 'text-gray-400 bg-gray-200'}`}
+                  >
+                    {participant.micOn ? '🎙️' : '🔇'}
+                  </button>
+                  <button
+                    onClick={() => toggleCam(index)}
+                    className={`p-2 rounded-full ${participant.camOn ? 'text-[#7D1C4A] hover:bg-[#F4CCE9]' : 'text-gray-400 bg-gray-200'}`}
+                  >
+                    {participant.camOn ? '🎥' : '📷'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
