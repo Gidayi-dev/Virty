@@ -43,13 +43,9 @@ const Dashboard = () => {
     toast.info(updatedTasks[index].completed ? 'Task completed!' : 'Task unmarked.', { autoClose: 2000 });
   };
 
-  const joinRoom = (roomType) => {
+  const joinRoom = (roomType, path) => {
     toast.success(`Joining ${roomType} room...`, { autoClose: 2000 });
-    setTimeout(() => navigate('/studyroom'), 2000); // Placeholder route
-  };
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+    setTimeout(() => navigate(path, { state: { roomType } }), 2000);
   };
 
   return (
@@ -78,15 +74,15 @@ const Dashboard = () => {
 
         {/* Study Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-[white] p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-600">Study Hours (Week)</p>
             <p className="text-3xl font-bold text-[#7D1C4A]">{user.studyHours}</p>
           </div>
-          <div className="bg-[white] p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-600">Tasks Completed</p>
             <p className="text-3xl font-bold text-[#7D1C4A]">{user.tasksCompleted}</p>
           </div>
-          <div className="bg-[white] p-6 rounded-lg shadow-md">
+          <div className="bg-white p-6 rounded-lg shadow-md">
             <p className="text-sm text-gray-600">Goals Achieved</p>
             <p className="text-3xl font-bold text-[#7D1C4A]">{user.goals.completed}/{user.goals.total}</p>
           </div>
@@ -97,19 +93,19 @@ const Dashboard = () => {
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Join a Study Room</h2>
           <div className="flex flex-wrap gap-4">
             <button
-              onClick={() => joinRoom('Silent')}
+              onClick={() => joinRoom('Silent', '/silent-room')}
               className="bg-[#D17D98] text-white px-6 py-2 rounded-lg hover:bg-[#7D1C4A]"
             >
               Silent Room
             </button>
             <button
-              onClick={() => joinRoom('Group')}
+              onClick={() => joinRoom('Group', '/group-room')}
               className="bg-[#D17D98] text-white px-6 py-2 rounded-lg hover:bg-[#7D1C4A]"
             >
               Group Room
             </button>
             <button
-              onClick={() => joinRoom('Custom')}
+              onClick={() => joinRoom('Custom', '/custom-room')}
               className="bg-[#D17D98] text-white px-6 py-2 rounded-lg hover:bg-[#7D1C4A]"
             >
               Create Room
