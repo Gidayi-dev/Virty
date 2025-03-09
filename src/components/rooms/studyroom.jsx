@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Stage, Layer, Line } from 'react-konva';
+import { Stage, Layer, Line, Text } from 'react-konva';
 
 const StudyRoom = () => {
   const [messages, setMessages] = useState([]);
@@ -11,8 +11,11 @@ const StudyRoom = () => {
   const [timerRunning, setTimerRunning] = useState(false);
   const [lines, setLines] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isErasing, setIsErasing] = useState(false); 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isWhiteboardOpen, setIsWhiteboardOpen] = useState(false);
+  const [textContent, setTextContent] = useState(''); 
+  const [texts, setTexts] = useState([]);
   const [participants, setParticipants] = useState([
     { name: 'You', micOn: true, camOn: true },
     { name: 'John', micOn: true, camOn: true },
@@ -72,20 +75,50 @@ const StudyRoom = () => {
     return `${mins}:${secs < 10 ? '0' + secs : secs}`;
   };
 
-  // Whiteboard Drawing Logic
+  // Whiteboard Logic
   const handleMouseDown = (e) => {
-    setIsDrawing(true);
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { points: [pos.x, pos.y] }]);
+    if (isErasing) {
+      // Erase mode: Remove lines near the cursor
+      setLines((prev) =>
+        prev.filter((line) => {
+          const points = line.points;
+          for (let i = 0; i < points.length - 1; i += 2) {
+            const x = points[i];
+            const y = points[i + 1];
+            if (Math.hypot(x - pos.x, y - pos.y) < 15) return false; // Erase if within 15px
+          }
+          return true;
+        })
+      );
+    } else {
+      // Draw mode
+      setIsDrawing(true);
+      setLines([...lines, { points: [pos.x, pos.y] }]);
+    }
   };
 
   const handleMouseMove = (e) => {
-    if (!isDrawing) return;
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
-    let lastLine = lines[lines.length - 1];
-    lastLine.points = lastLine.points.concat([point.x, point.y]);
-    setLines([...lines.slice(0, -1), lastLine]);
+    if (isDrawing && !isErasing) {
+      let lastLine = lines[lines.length - 1];
+      lastLine.points = lastLine.points.concat([point.x, point.y]);
+      setLines([...lines.slice(0, -1), lastLine]);
+    } else if (isErasing) {
+      // Erase while moving
+      setLines((prev) =>
+        prev.filter((line) => {
+          const points = line.points;
+          for (let i = 0; i < points.length - 1; i += 2) {
+            const x = points[i];
+            const y = points[i + 1];
+            if (Math.hypot(x - point.x, y - point.y) < 15) return false;
+          }
+          return true;
+        })
+      );
+    }
   };
 
   const handleMouseUp = () => {
@@ -93,18 +126,25 @@ const StudyRoom = () => {
   };
 
   const toggleMic = (index) => {
-    setParticipants((prev) => 
+    setParticipants((prev) =>
       prev.map((p, i) => (i === index ? { ...p, micOn: !p.micOn } : p))
     );
     toast.info(`${participants[index].name} ${participants[index].micOn ? 'unmuted' : 'muted'} mic`, { autoClose: 1000 });
   };
- 
+
   const toggleCam = (index) => {
     setParticipants((prev) =>
       prev.map((p, i) => (i === index ? { ...p, camOn: !p.camOn } : p))
     );
     toast.info(`${participants[index].name} ${participants[index].camOn ? 'turned off' : 'turned on'} camera`, { autoClose: 1000 });
-  }
+  };
+
+  const addTextToWhiteboard = (e) => {
+    e.preventDefault();
+    if (textContent.trim()) {
+      setTexts([...texts, { text: textContent, x: 50, y: texts.length * 30 + 50 }]); 
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -125,7 +165,7 @@ const StudyRoom = () => {
           <span className="text-lg font-bold text-gray-700">{formatTime(timer)}</span>
           <button
             onClick={togglePomodoro}
-            className="text-white p-2 rounded-full"
+            className="text-white p-2 rounded-full cursor-pointer"
           >
             {timerRunning ? '⏸️' : '▶️'}
           </button>
@@ -154,15 +194,16 @@ const StudyRoom = () => {
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="p-6 max-w-6xl mx-auto flex flex-col h-[calc(100vh-80px)]">
         {/* Participants Section */}
-        <div className="flex-grow bg-white p-6 rounded-lg shadow-md">
+        <div className="flex-grow bg-white p-6 rounded-lg shadow-md overflow-y-auto">
           <h2 className="text-lg font-semibold text-[#7D1C4A] mb-4">Participants</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 h-full overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {participants.map((participant, index) => (
               <div
                 key={index}
-                className="bg-[gray] p-4 rounded-lg flex flex-col items-center justify-center relative"
+                className="bg-gray-100 p-4 rounded-lg flex flex-col items-center justify-center relative"
               >
                 {/* Avatar */}
                 <div className="w-16 h-16 bg-[#D17D98] rounded-full flex items-center justify-center text-white text-2xl mb-2">
@@ -174,13 +215,13 @@ const StudyRoom = () => {
                 <div className="flex space-x-2 mt-2">
                   <button
                     onClick={() => toggleMic(index)}
-                    className={`p-2 rounded-full ${participant.micOn ? 'text-[#7D1C4A] cursor-pointer' : 'text-gray-400 bg-gray-200'}`}
+                    className={`p-2 rounded-full ${participant.micOn ? 'text-[#7D1C4A] cursor-pointer hover:bg-[white]' : 'text-gray-400 bg-gray-200'}`}
                   >
                     {participant.micOn ? '🎙️' : '🔇'}
                   </button>
                   <button
                     onClick={() => toggleCam(index)}
-                    className={`p-2 rounded-full ${participant.camOn ? 'text-[#7D1C4A] cursor-pointer' : 'text-gray-400 bg-gray-200'}`}
+                    className={`p-2 rounded-full ${participant.camOn ? 'text-[#7D1C4A] cursor-pointer hover:bg-[white]' : 'text-gray-400 bg-gray-200'}`}
                   >
                     {participant.camOn ? '🎥' : '📷'}
                   </button>
@@ -198,12 +239,12 @@ const StudyRoom = () => {
             <h2 className="text-lg font-semibold text-[#7D1C4A]">Chat</h2>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="text-[#7D1C4A] cursor-pointer"
+              className="text-[#7D1C4A] cursor-pointer hover:text-[#D17D98]"
             >
               ✕
             </button>
           </div>
-          <div className="h-[70%] overflow-y-auto mb-4 cursor-pointer">
+          <div className="h-[70%] overflow-y-auto mb-4">
             {messages.map((msg, index) => (
               <div key={index} className="mb-2">
                 <span className="text-xs text-gray-500">{msg.timestamp} - {msg.sender}: </span>
@@ -229,11 +270,34 @@ const StudyRoom = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-3/4 relative">
             <button
               onClick={() => setIsWhiteboardOpen(false)}
-              className="absolute top-2 right-2 text-[#7D1C4A] cursor-pointer"
+              className="absolute top-2 right-2 text-[#7D1C4A] cursor-pointer hover:text-[#D17D98]"
             >
               ✕
             </button>
             <h3 className="text-lg font-semibold text-[#7D1C4A] mb-4">Whiteboard</h3>
+            <div className="flex items-center space-x-4 mb-4">
+              <button
+                onClick={() => setIsErasing(false)}
+                className={`p-2 rounded-full ${!isErasing ? 'bg-[#D17D98] text-white' : 'text-[#7D1C4A] hover:bg-[#F4CCE9]'}`}
+              >
+                ✏️
+              </button>
+              <button
+                onClick={() => setIsErasing(true)}
+                className={`p-2 rounded-full ${isErasing ? 'bg-[#D17D98] text-white' : 'text-[#7D1C4A] hover:bg-[#F4CCE9]'}`}
+              >
+                🧹
+              </button>
+            </div>
+            <form onSubmit={addTextToWhiteboard} className="mb-4">
+              <input
+                type="text"
+                value={textContent}
+                onChange={(e) => setTextContent(e.target.value)}
+                placeholder="Type text here..."
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#D17D98]"
+              />
+            </form>
             <Stage
               width={800}
               height={500}
@@ -251,6 +315,16 @@ const StudyRoom = () => {
                     strokeWidth={2}
                     tension={0.5}
                     lineCap="round"
+                  />
+                ))}
+                {texts.map((textObj, i) => (
+                  <Text
+                    key={i}
+                    x={textObj.x}
+                    y={textObj.y}
+                    text={textObj.text}
+                    fontSize={20}
+                    fill="#7D1C4A"
                   />
                 ))}
               </Layer>
