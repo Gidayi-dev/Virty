@@ -133,7 +133,7 @@ const StudyRoom = () => {
         <div className="relative group">
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
-            className="text-[#7D1C4A] p-2 rounded-full hover:bg-[#F4CCE9]"
+            className="text-[#7D1C4A] p-2 rounded-full cursor-pointer"
           >
             💬
           </button>
@@ -144,7 +144,7 @@ const StudyRoom = () => {
         <div className="relative group">
           <button
             onClick={() => setIsWhiteboardOpen(!isWhiteboardOpen)}
-            className="text-[#7D1C4A] p-2 rounded-full hover:bg-[#F4CCE9]"
+            className="text-[#7D1C4A] p-2 rounded-full cursor-pointer"
           >
             ✏️
           </button>
@@ -174,13 +174,13 @@ const StudyRoom = () => {
                 <div className="flex space-x-2 mt-2">
                   <button
                     onClick={() => toggleMic(index)}
-                    className={`p-2 rounded-full ${participant.micOn ? 'text-[#7D1C4A] hover:bg-[#F4CCE9]' : 'text-gray-400 bg-gray-200'}`}
+                    className={`p-2 rounded-full ${participant.micOn ? 'text-[#7D1C4A] cursor-pointer' : 'text-gray-400 bg-gray-200'}`}
                   >
                     {participant.micOn ? '🎙️' : '🔇'}
                   </button>
                   <button
                     onClick={() => toggleCam(index)}
-                    className={`p-2 rounded-full ${participant.camOn ? 'text-[#7D1C4A] hover:bg-[#F4CCE9]' : 'text-gray-400 bg-gray-200'}`}
+                    className={`p-2 rounded-full ${participant.camOn ? 'text-[#7D1C4A] cursor-pointer' : 'text-gray-400 bg-gray-200'}`}
                   >
                     {participant.camOn ? '🎥' : '📷'}
                   </button>
@@ -198,12 +198,12 @@ const StudyRoom = () => {
             <h2 className="text-lg font-semibold text-[#7D1C4A]">Chat</h2>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="text-[#7D1C4A] hover:text-[#D17D98]"
+              className="text-[#7D1C4A] cursor-pointer"
             >
               ✕
             </button>
           </div>
-          <div className="h-[70%] overflow-y-auto mb-4">
+          <div className="h-[70%] overflow-y-auto mb-4 cursor-pointer">
             {messages.map((msg, index) => (
               <div key={index} className="mb-2">
                 <span className="text-xs text-gray-500">{msg.timestamp} - {msg.sender}: </span>
@@ -229,7 +229,7 @@ const StudyRoom = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-3/4 relative">
             <button
               onClick={() => setIsWhiteboardOpen(false)}
-              className="absolute top-2 right-2 text-[#7D1C4A] hover:text-[#D17D98]"
+              className="absolute top-2 right-2 text-[#7D1C4A] cursor-pointer"
             >
               ✕
             </button>
